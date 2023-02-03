@@ -31,6 +31,8 @@ rule time_boson_ipi_run:
     params:
         socket_id=get_socket_id,
         workdir="tmp/ipi-run-{num_bosons}/"
+    benchmark:
+        repeat("benchmarks/ipi-run-{num_bosons}.tsv", config['num_repetitions'])
     threads: 4
     log: "logs/ipi-{num_bosons}.log"
     script:

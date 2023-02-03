@@ -100,9 +100,12 @@ def time_ipi(input_filename, socket_id):
 def bench_ipi():
     # code duplicated from ipi/ipi_tests/test_tools.py: Runner.run()
     measured_time = time_ipi(snakemake.input[0], int(snakemake.params.socket_id))
-    with open(snakemake.output[0], 'w') as csv_log:
+    ofile = snakemake.output[0]
+    appending = os.path.isfile(ofile)
+    with open(ofile, 'a') as csv_log:
         w = csv.DictWriter(csv_log, ["nbosons", "time"])
-        w.writeheader()
+        if not appending:
+            w.writeheader()
         w.writerow({"nbosons": snakemake.wildcards.num_bosons, "time": measured_time})
         csv_log.flush()
 
