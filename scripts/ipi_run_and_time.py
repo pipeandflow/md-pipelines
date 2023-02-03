@@ -3,6 +3,7 @@ import time
 import csv
 import os
 import shutil
+from utils import set_logger
 
 
 def time_ipi(input_filename, socket_id):
@@ -13,7 +14,7 @@ def time_ipi(input_filename, socket_id):
     call_ipi="i-pi " + input_filename
     clientcall = f"i-pi-driver -u -m harm3d -o 1.21647924E-8 -h {socket_id}"
 
-    #logger.debug("Start i-pi server")
+    logger.debug("Start i-pi server")
 
     ipi = subprocess.Popen(
         call_ipi,
@@ -71,7 +72,7 @@ def time_ipi(input_filename, socket_id):
     # print("cmd:", cmd)
 
     time.sleep(5)
-    #logger.debug("Start driver execution")
+    logger.debug("Start driver execution")
 
 
     start_time = time.time()
@@ -82,16 +83,16 @@ def time_ipi(input_filename, socket_id):
                          shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     )
 
-    #logger.debug("Start wait for ipi process")
+    logger.debug("Start wait for ipi process")
 
     ipi_error = ipi.communicate(timeout=snakemake.config['SINGLE_BENCH_TIMEOUT_SECONDS'])[1].decode("ascii")
-    # if ipi_error != "":
-    #     print(ipi_error)
+    if ipi_error != "":
+        logger.debug(ipi_error)
     # assert "" == ipi_error, "IPI ERROR OCCURRED: {}".format(ipi_error)
 
     end_time = time.time()
 
-    #logger.debug("i-pi run ended; time %s" % str(end_time - start_time))
+    logger.debug("i-pi run ended; time %s" % str(end_time - start_time))
 
     return end_time - start_time
 
@@ -108,6 +109,7 @@ def bench_ipi():
 #####################################################################3333
 
 if __name__ == '__main__':
+    logger = set_logger(snakemake.log[0])
     workdir = snakemake.params.workdir
     if os.path.isdir(workdir):
         shutil.rmtree(workdir)

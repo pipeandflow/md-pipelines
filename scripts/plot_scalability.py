@@ -14,8 +14,8 @@ for fname in snakemake.input:
     run_times.append(data[1])
 
 n = np.array(n_bosons)
-plt.plot(n, np.array(run_times), '.')
+plt.loglog(n, np.array(run_times), '.')
 
-plt.gca().plot(n, (np.max(run_times)/1024**2)*n**2, 'r-')
+#plt.gca().loglog(n, (np.max(run_times)/1024**2)*n**2, 'r-')
 plt.show()
 plt.savefig(snakemake.output[0])

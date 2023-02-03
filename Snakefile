@@ -7,13 +7,14 @@ print(config)
 def get_socket_id(wildcards, *args, **argw):
     return 50000 + int(wildcards.num_bosons)
 #----------------------------------------------------------------
+localrules: all, plot_scalability, prepare_input_for_ipi 
 
 rule all:
     input:
         "boson_scalabilty.png"
 
 
-rule plot_scalabilty:
+rule plot_scalability:
     input:
         expand("results/{num_bosons}_bosons_timing.dat", num_bosons=config['boson_numbers'])
     output:
@@ -30,7 +31,8 @@ rule time_boson_ipi_run:
     params:
         socket_id=get_socket_id,
         workdir="tmp/ipi-run-{num_bosons}/"
-    threads: 2
+    threads: 4
+    log: "logs/ipi-{num_bosons}.log"
     script:
         "scripts/ipi_run_and_time.py"
         

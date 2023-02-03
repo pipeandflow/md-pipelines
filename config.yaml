@@ -3,3 +3,4 @@ boson_numbers: [16, 32, 64, 128, 256, 512, 1024]
 #boson_numbers: [16]
 random_seed: 1885
 SINGLE_BENCH_TIMEOUT_SECONDS: 604800
+envfile: "/hirshblab/data/yotamfe1/mi-pi/env.sh"
