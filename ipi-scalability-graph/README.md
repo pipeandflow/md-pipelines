@@ -55,7 +55,7 @@ To avoid the lenghty command line, the profile functionality may be used.
 First, install the supplied profile directory:
 ```bash
 mkdir ~/.config/snakemake
-cp -rfp ../.config/hirshblab ~/.config/hirshblab
+cp -rfp ../.config/hirshblab ~/.config/snakemake
 ```
 Then the above snakemake command line turns into:
 ```bash
