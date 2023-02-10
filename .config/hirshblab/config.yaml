@@ -1,0 +1,3 @@
+cluster: qsub -q hirshb -l ncpus={threads}
+cluster-cancel: qdel
+jobs: 100

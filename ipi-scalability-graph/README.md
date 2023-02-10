@@ -50,6 +50,18 @@ git clean -x -f -d . # to clean all outputs from the previous check
 snakemake --cluster 'qsub -q hirshb -l ncpus={threads}' --cluster-cancel 'qdel' -j 7&
 ```
 
+To avoid the lenghty command line, the profile functionality may be used.
+
+First, install the supplied profile directory:
+```bash
+mkdir ~/.config/snakemake
+cp -rfp ../.config/hirshblab ~/.config/hirshblab
+```
+Then the above snakemake command line turns into:
+```bash
+snakemake --profile hirshblab
+```
+
 Setup Snakemake syntax highlighting for VIM
 --------------------------------------------
 
