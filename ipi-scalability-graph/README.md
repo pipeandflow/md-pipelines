@@ -1,10 +1,10 @@
 Usage
-------
+======= 
 
 The following are instructions to use the workflow from the hirshlab group.
 
 Install Snakemake
-==================
+------------------
 
 First make sure that a module of python3 is loaded. E.g.:
 
@@ -19,7 +19,7 @@ pip install --user snakemake
 ```
 
 Sanity check
-==============
+-------------- 
 
 Check that the workflow works on local node for small run:	
 Edit `config.yaml` to use only 16 bosons:
@@ -51,7 +51,7 @@ snakemake --cluster 'qsub -q hirshb -l ncpus={threads}' --cluster-cancel 'qdel' 
 ```
 
 Setup Snakemake syntax highlighting for VIM
-============================================
+--------------------------------------------
 
 ```bash
 mkdir -p ~/.vim/syntax
