@@ -35,6 +35,7 @@ rule time_boson_ipi_run:
         repeat("benchmarks/ipi-run-{num_bosons}.tsv", config['num_repetitions'])
     threads: 4
     log: "logs/ipi-{num_bosons}.log"
+    shadow: "shallow"
     script:
         "scripts/ipi_run_and_time.py"
         
