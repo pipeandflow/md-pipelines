@@ -1,0 +1,55 @@
+lammps_version="stable_23Jun2022_update2"
+lammps_packages=["VORONOI"]
+
+rule lammps_example:
+    input: "runs/voronoi/log.voronoi"
+
+rule download_lammps:
+    output: directory(f"lammps-{lammps_version}")
+    cache: "omit-software"
+    message: 
+        "Downloaded {lammps_version}"
+    shell:
+        f"wget https://github.com/lammps/lammps/archive/refs/tags/{lammps_version}.tar.gz&&"
+        "tar -xzvf *.tar.gz"
+
+rule source_hash:
+    input: "{dirname}"
+    output: temp("{dirname}_sha256.dat")
+    message:
+        "caclulated hash for {input}..."
+    shell:
+        "find {input} -type f | sort -z | sha256sum > {output}"
+
+
+rule build_lammps:
+    input: 
+        dirname=rules.download_lammps.output,
+        sha=rules.download_lammps.output[0]+"_sha256.dat"
+    output: "build/lmp"
+    threads: 4
+    log:
+        "logs/lammps_build.log"
+    params:
+        packages=" ".join(["-DPKG_{}=ON".format(_) for _ in lammps_packages])
+    shell: """
+        mkdir -p build
+        cmake {params.packages} -S {input.dirname}/cmake -B build | tee {log}
+        cmake --build build -- -j {threads} | tee -a {log}
+        """
+
+rule run_lammps_example:
+    input:
+        exe=rules.build_lammps.output,
+        example=rules.download_lammps.output[0]+"/examples/{title}/in.{example_name}"
+    output:
+        "runs/{title}/log.{example_name}"
+    log:
+        "logs/run_{title}_{example_name}.log"
+    shadow: "shallow"
+    threads: 4
+    shell:
+        """
+        {input.exe} -i {input.example} -l {output} | tee {log}
+        """
+
