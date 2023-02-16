@@ -7,7 +7,8 @@ print(config)
 def get_socket_id(wildcards, *args, **argw):
     return 50000 + int(wildcards.num_bosons)
 #----------------------------------------------------------------
-localrules: all, plot_scalability, prepare_input_for_ipi 
+localrules: all, plot_scalability, prepare_input_for_ipi
+workdir: "/hirshblab-storage/yotamfe1/i-pi-snake"
 
 rule all:
     input:

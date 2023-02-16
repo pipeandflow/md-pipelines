@@ -1,0 +1,57 @@
+from snakemake.utils import min_version
+min_version("7.20.0")
+
+configfile: "config.yaml"
+
+print(config)
+#----------------------------------------------------------------
+localrules: all, plot_scalability, prepare_input_for_lammps
+workdir: "/hirshblab-storage/yotamfe1/lammps-scalability-snake"
+
+rule all:
+    input:
+        "boson_scalabilty.png"
+
+
+rule plot_scalability:
+    input:
+        expand("results/{num_bosons}_bosons_timing.dat", num_bosons=config['boson_numbers'])
+    output:
+        rules.all.input
+    script:
+        "scripts/plot_scalability.py"
+    
+rule time_boson_lammps_run:
+    input:
+        "tmp/lammps_input_{num_bosons}_bosons.in"
+    output:
+        "results/{num_bosons}_bosons_timing.dat"
+    log:
+        "logs/run_{num_bosons}_bosons.log"
+    shadow: "shallow"
+    benchmark:
+        repeat("benchmarks/lammps-run-{num_bosons}.tsv", config['num_repetitions'])
+    threads: config['num_beads']
+    params:
+        lammps_exe=config['lammps_exe']
+    shell:
+        """
+	touch {output}
+	module load gcc/gcc-8.2.0
+	module load mpi/openmpi-4.0.5
+	mpirun -np {threads} {params.lammps_exe} -partition {threads}x1 -in {input} -screen none
+	cat log.lammps.0 | grep 'Total wall time:' >> {output}
+        """
+
+
+rule prepare_input_for_lammps:
+    output:
+        rules.time_boson_lammps_run.input
+    params:
+        num_bosons="{num_bosons}",
+	num_beads=config['num_beads'],
+	seed=98743501,
+	num_steps=10000
+    script:
+        "scripts/prepare_lammps_noninteracting_single.py"
+        

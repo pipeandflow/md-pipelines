@@ -1,0 +1,5 @@
+#boson_numbers: [16, 32, 64, 128, 256, 512, 1024]
+boson_numbers: [16]
+num_repetitions: 3
+lammps_exe: "/hirshblab/data/yotamfe1/mlammps/src/lmp_mpi"
+num_beads: 4
