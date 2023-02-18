@@ -42,8 +42,8 @@ rule run_lammps_example:
     input:
         exe=rules.build_lammps.output,
     output:
-        "runs/{title}/log.{example_name}",
-        directory('rundirs/{title}_{example_name}')
+        log="runs/{title}/log.{example_name}",
+        directory=directory('rundirs/{title}_{example_name}')
     log:
         "logs/run_{title}_{example_name}.log"
     threads: 4
@@ -51,10 +51,10 @@ rule run_lammps_example:
         example=rules.download_lammps.output[0]+"/examples/{title}/in.{example_name}"
     shell:
         """
-        mkdir -p {output[1]}
+        mkdir -p {output.directory}
         origdir=$(pwd)
-        cd {output[1]} 
-        ${{origdir}}/{input.exe} -i ${{origdir}}/{params.example} -l ${{origdir}}/{output[0]} | tee ${{origdir}}/{log}
+        cd {output.directory} 
+        ${{origdir}}/{input.exe} -i ${{origdir}}/{params.example} -l ${{origdir}}/{output.log} | tee ${{origdir}}/{log}
         cd ${{origdir}}
         """
 
