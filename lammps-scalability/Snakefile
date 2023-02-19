@@ -33,10 +33,11 @@ rule time_boson_lammps_run:
         repeat("benchmarks/lammps-run-{num_bosons}-{lmp}.tsv", config['num_repetitions'])
     threads: config['num_beads']
     params:
-        lammps_exe=config['lammps_exe'] if '{lmp}'=='my' else config['baseline_lammps_exe']
+	    lammps_exe=lambda wildcards, output: config['lammps_exe'] if wildcards.lmp=='my' else config['baseline_lammps_exe']
     shell:
         """
 	touch {output}
+	ls {params.lammps_exe} >> {output}
 	module load gcc/gcc-8.2.0
 	module load mpi/openmpi-4.0.5
 	mpirun -np {threads} {params.lammps_exe} -partition {threads}x1 -in {input} -screen none
