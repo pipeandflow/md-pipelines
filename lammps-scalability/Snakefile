@@ -40,6 +40,7 @@ rule time_boson_lammps_run:
 	module load gcc/gcc-8.2.0
 	module load mpi/openmpi-4.0.5
 	mpirun -np {threads} {params.lammps_exe} -partition {threads}x1 -in {input} -screen none
+	cat log.lammps.0 | grep 'Loop time of' >> {output}
 	cat log.lammps.0 | grep 'Total wall time:' >> {output}
         """
 
@@ -51,7 +52,7 @@ rule prepare_input_for_lammps:
         num_bosons="{num_bosons}",
 	num_beads=config['num_beads'],
 	seed=98743501,
-	num_steps=10000
+	num_steps=1000
     script:
         "scripts/prepare_lammps_noninteracting_single.py"
         
